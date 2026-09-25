@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { SyncDevice, SyncNotification, ClipboardItem, SyncRoomState } from '../types';
+import { SyncDevice, SyncNotification, ClipboardItem, SyncRoomState, MediaState } from '../types';
 import { playNotificationSound, startRingingAlert, stopRingingAlert } from '../utils/audio';
 import { showSystemNotification } from '../utils/webNotification';
 
@@ -79,6 +79,39 @@ export function useSyncSocket(initialRoomCode: string) {
   const [dndMode, setDndMode] = useState<boolean>(false);
   const [mutedApps, setMutedApps] = useState<string[]>([]);
   const [ringingDeviceId, setRingingDeviceId] = useState<string | null>(null);
+  const [mediaState, setMediaState] = useState<MediaState>({
+    currentTrack: {
+      id: 'track-1',
+      title: 'Midnight City',
+      artist: 'M83',
+      album: "Hurry Up, We're Dreaming",
+      app: 'Spotify',
+      duration: 244,
+      coverGradient: 'from-violet-600 via-indigo-600 to-cyan-500',
+    },
+    isPlaying: true,
+    position: 68,
+    volume: 75,
+    isLiked: true,
+    sourceDeviceId: 'android-default',
+    updatedAt: Date.now(),
+  });
+
+  // Local playback progress ticker
+  useEffect(() => {
+    if (!mediaState.isPlaying) return;
+    const interval = setInterval(() => {
+      setMediaState((prev) => {
+        if (!prev.isPlaying) return prev;
+        const nextPos = prev.position + 1;
+        if (nextPos >= prev.currentTrack.duration) {
+          return { ...prev, position: 0 };
+        }
+        return { ...prev, position: nextPos };
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [mediaState.isPlaying]);
 
   const [isConnected, setIsConnected] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
@@ -179,6 +212,9 @@ export function useSyncSocket(initialRoomCode: string) {
             setDndMode(room.dndMode || false);
             setMutedApps(room.mutedApps || []);
             setRingingDeviceId(room.ringingDeviceId || null);
+            if (room.mediaState) {
+              setMediaState(room.mediaState);
+            }
             break;
           }
 
@@ -287,6 +323,13 @@ export function useSyncSocket(initialRoomCode: string) {
 
           case 'APP_FILTERS_UPDATED': {
             setMutedApps(payload.mutedApps || []);
+            break;
+          }
+
+          case 'MEDIA_SYNC': {
+            if (payload.mediaState) {
+              setMediaState(payload.mediaState);
+            }
             break;
           }
         }
@@ -461,6 +504,30 @@ export function useSyncSocket(initialRoomCode: string) {
     sendWs('UPDATE_APP_FILTER', { appName, muted: !isMuted });
   };
 
+  const controlMedia = (
+    action: 'play' | 'pause' | 'togglePlay' | 'next' | 'prev' | 'seek' | 'volume' | 'toggleLike' | 'changeTrack',
+    data?: any
+  ) => {
+    // Optimistic local update
+    setMediaState((prev) => {
+      const next = { ...prev, updatedAt: Date.now() };
+      if (action === 'play') next.isPlaying = true;
+      else if (action === 'pause') next.isPlaying = false;
+      else if (action === 'togglePlay') next.isPlaying = !next.isPlaying;
+      else if (action === 'seek' && typeof data?.position === 'number') next.position = data.position;
+      else if (action === 'volume' && typeof data?.volume === 'number') next.volume = data.volume;
+      else if (action === 'toggleLike') next.isLiked = !next.isLiked;
+      else if (action === 'changeTrack' && data?.track) {
+        next.currentTrack = data.track;
+        next.position = 0;
+        next.isPlaying = true;
+      }
+      return next;
+    });
+
+    sendWs('MEDIA_CONTROL', { action, data });
+  };
+
   return {
     roomCode,
     changeRoomCode,
@@ -472,6 +539,7 @@ export function useSyncSocket(initialRoomCode: string) {
     dndMode,
     mutedApps,
     ringingDeviceId,
+    mediaState,
     isConnected,
     isReconnecting,
     soundEnabled,
@@ -488,5 +556,6 @@ export function useSyncSocket(initialRoomCode: string) {
     stopRing,
     toggleDND,
     toggleAppMute,
+    controlMedia,
   };
 }

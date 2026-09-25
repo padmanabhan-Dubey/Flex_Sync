@@ -58,6 +58,23 @@ interface RoomState {
   dndMode: boolean;
   mutedApps: string[];
   ringingDeviceId: string | null;
+  mediaState: {
+    currentTrack: {
+      id: string;
+      title: string;
+      artist: string;
+      album: string;
+      app: 'Spotify' | 'YouTube Music' | 'Apple Music' | 'Podcasts';
+      duration: number;
+      coverGradient: string;
+    };
+    isPlaying: boolean;
+    position: number;
+    volume: number;
+    isLiked: boolean;
+    sourceDeviceId: string;
+    updatedAt: number;
+  };
 }
 
 // In-memory room store
@@ -165,6 +182,23 @@ function getOrCreateRoom(roomCode: string): RoomState {
       dndMode: false,
       mutedApps: [],
       ringingDeviceId: null,
+      mediaState: {
+        currentTrack: {
+          id: 'track-1',
+          title: 'Midnight City',
+          artist: 'M83',
+          album: "Hurry Up, We're Dreaming",
+          app: 'Spotify',
+          duration: 244,
+          coverGradient: 'from-violet-600 via-indigo-600 to-cyan-500',
+        },
+        isPlaying: true,
+        position: 68,
+        volume: 75,
+        isLiked: true,
+        sourceDeviceId: 'android-default',
+        updatedAt: Date.now(),
+      },
     };
     rooms.set(code, room);
   }
@@ -463,6 +497,90 @@ async function startServer() {
             broadcastToRoom(session.roomCode, {
               type: 'APP_FILTERS_UPDATED',
               payload: { mutedApps: room.mutedApps },
+            });
+            break;
+          }
+
+          case 'MEDIA_CONTROL': {
+            if (!session.roomCode) return;
+            const room = rooms.get(session.roomCode);
+            if (!room) return;
+            const { action, data } = payload;
+            const media = room.mediaState;
+
+            if (action === 'play') {
+              media.isPlaying = true;
+            } else if (action === 'pause') {
+              media.isPlaying = false;
+            } else if (action === 'togglePlay') {
+              media.isPlaying = !media.isPlaying;
+            } else if (action === 'seek' && typeof data?.position === 'number') {
+              media.position = Math.max(0, Math.min(media.currentTrack.duration, data.position));
+            } else if (action === 'volume' && typeof data?.volume === 'number') {
+              media.volume = Math.max(0, Math.min(100, data.volume));
+            } else if (action === 'toggleLike') {
+              media.isLiked = !media.isLiked;
+            } else if (action === 'changeTrack' && data?.track) {
+              media.currentTrack = data.track;
+              media.position = 0;
+              media.isPlaying = true;
+            } else if (action === 'next' || action === 'prev') {
+              const playlist = [
+                {
+                  id: 'track-1',
+                  title: 'Midnight City',
+                  artist: 'M83',
+                  album: "Hurry Up, We're Dreaming",
+                  app: 'Spotify' as const,
+                  duration: 244,
+                  coverGradient: 'from-violet-600 via-indigo-600 to-cyan-500',
+                },
+                {
+                  id: 'track-2',
+                  title: 'Starboy',
+                  artist: 'The Weeknd, Daft Punk',
+                  album: 'Starboy',
+                  app: 'Apple Music' as const,
+                  duration: 230,
+                  coverGradient: 'from-rose-600 via-amber-600 to-yellow-500',
+                },
+                {
+                  id: 'track-3',
+                  title: 'Get Lucky',
+                  artist: 'Daft Punk ft. Pharrell Williams',
+                  album: 'Random Access Memories',
+                  app: 'YouTube Music' as const,
+                  duration: 248,
+                  coverGradient: 'from-blue-600 via-sky-500 to-emerald-400',
+                },
+                {
+                  id: 'track-4',
+                  title: 'Waveform: The Tech Podcast',
+                  artist: 'MKBHD',
+                  album: 'Episode 214: ChromeOS vs Android',
+                  app: 'Podcasts' as const,
+                  duration: 320,
+                  coverGradient: 'from-emerald-600 via-teal-600 to-indigo-600',
+                },
+              ];
+              const currentIndex = playlist.findIndex((t) => t.id === media.currentTrack.id);
+              const nextIndex =
+                action === 'next'
+                  ? (currentIndex + 1) % playlist.length
+                  : (currentIndex - 1 + playlist.length) % playlist.length;
+              media.currentTrack = playlist[nextIndex];
+              media.position = 0;
+              media.isPlaying = true;
+            }
+
+            media.updatedAt = Date.now();
+            if (session.deviceId) {
+              media.sourceDeviceId = session.deviceId;
+            }
+
+            broadcastToRoom(session.roomCode, {
+              type: 'MEDIA_SYNC',
+              payload: { mediaState: media },
             });
             break;
           }

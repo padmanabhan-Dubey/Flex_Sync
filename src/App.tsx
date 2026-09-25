@@ -4,6 +4,7 @@ import { NotificationFilter } from './types';
 import { Header } from './components/Header';
 import { NotificationStreamWidget } from './components/widgets/NotificationStreamWidget';
 import { DeviceWidget } from './components/widgets/DeviceWidget';
+import { MediaControllerWidget } from './components/widgets/MediaControllerWidget';
 import { ControlCenterWidget } from './components/widgets/ControlCenterWidget';
 import { QuickBroadcasterWidget } from './components/widgets/QuickBroadcasterWidget';
 import { ClipboardSyncPanel } from './components/ClipboardSyncPanel';
@@ -26,6 +27,7 @@ export default function App() {
     dndMode,
     mutedApps,
     ringingDeviceId,
+    mediaState,
     isConnected,
     isReconnecting,
     soundEnabled,
@@ -41,6 +43,7 @@ export default function App() {
     stopRing,
     toggleDND,
     toggleAppMute,
+    controlMedia,
   } = useSyncSocket('FLEX-101');
 
   // UI State
@@ -217,7 +220,14 @@ export default function App() {
               ringingDeviceId={ringingDeviceId}
             />
 
-            {/* Widget 2: Control Center Quick Toggles */}
+            {/* Widget 2: Remote Media Controller (Now Playing) */}
+            <MediaControllerWidget
+              mediaState={mediaState}
+              onControlMedia={controlMedia}
+              sourceDeviceName={pairedAndroidDevice?.name || 'Android Phone'}
+            />
+
+            {/* Widget 3: Control Center Quick Toggles */}
             <ControlCenterWidget
               dndMode={dndMode}
               onToggleDnd={() => toggleDND(!dndMode)}

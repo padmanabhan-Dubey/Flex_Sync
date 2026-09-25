@@ -58,6 +58,26 @@ export interface ClipboardItem {
   timestamp: number;
 }
 
+export interface MediaTrack {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+  app: 'Spotify' | 'YouTube Music' | 'Apple Music' | 'Podcasts';
+  duration: number; // in seconds
+  coverGradient: string;
+}
+
+export interface MediaState {
+  currentTrack: MediaTrack;
+  isPlaying: boolean;
+  position: number; // in seconds
+  volume: number; // 0-100
+  isLiked: boolean;
+  sourceDeviceId: string;
+  updatedAt: number;
+}
+
 export interface SyncRoomState {
   roomCode: string;
   createdAt: number;
@@ -67,6 +87,7 @@ export interface SyncRoomState {
   dndMode: boolean;
   mutedApps: string[];
   ringingDeviceId: string | null;
+  mediaState: MediaState;
 }
 
 export type NotificationFilter = 'all' | 'unread' | 'starred' | 'snoozed' | 'dismissed';
