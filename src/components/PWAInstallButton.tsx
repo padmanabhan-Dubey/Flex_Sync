@@ -6,7 +6,6 @@ export const PWAInstallButton: React.FC<{ className?: string }> = ({ className =
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
 
-  // If already running as an installed PWA, hide the button
   if (isInstalled) {
     return null;
   }
@@ -16,10 +15,10 @@ export const PWAInstallButton: React.FC<{ className?: string }> = ({ className =
     return (
       <button
         onClick={install}
-        className={`flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-cyan-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:from-indigo-600 hover:to-cyan-600 transition active:scale-95 ${className}`}
-        title="Install FlexSync as a Progressive Web App"
+        className={`flex items-center gap-1.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.1] px-3.5 py-1 text-xs font-medium text-white shadow-sm transition active:scale-95 ${className}`}
+        title="Install FlexSync App"
       >
-        <Download className="w-3.5 h-3.5" />
+        <Download className="w-3.5 h-3.5 text-[#0a84ff]" />
         <span>Install App</span>
       </button>
     );
@@ -31,34 +30,34 @@ export const PWAInstallButton: React.FC<{ className?: string }> = ({ className =
       <>
         <button
           onClick={() => setShowIOSGuide(true)}
-          className={`flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 transition ${className}`}
+          className={`flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.08] hover:bg-white/[0.14] px-3 py-1 text-xs font-medium text-white/90 transition ${className}`}
         >
-          <Smartphone className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Install PWA</span>
+          <Smartphone className="w-3.5 h-3.5 text-[#0a84ff]" />
+          <span>Add to Home</span>
         </button>
 
         {showIOSGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-slate-100">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl p-4 animate-in fade-in duration-200">
+            <div className="w-full max-w-sm rounded-3xl bg-[#1c1d24]/95 border border-white/[0.12] p-6 shadow-2xl text-white">
               <div className="flex justify-between items-start mb-3">
-                <h3 className="text-base font-semibold text-white">Install on iPhone / iPad</h3>
+                <h3 className="text-[15px] font-semibold text-white">Add to Home Screen</h3>
                 <button
                   onClick={() => setShowIOSGuide(false)}
-                  className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+                  className="text-white/50 hover:text-white p-1 rounded-full hover:bg-white/10"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed space-y-2 mb-4">
-                1. Tap the <strong className="text-indigo-400">Share</strong> icon at the bottom of Safari.<br />
-                2. Scroll down and choose <strong className="text-indigo-400">Add to Home Screen</strong>.<br />
-                3. Open FlexSync from your home screen for full-screen notification hub mode.
+              <p className="text-xs text-white/70 leading-relaxed space-y-2 mb-4">
+                1. Tap the <strong className="text-[#0a84ff]">Share</strong> icon at the bottom of Safari.<br />
+                2. Select <strong className="text-white">Add to Home Screen</strong>.<br />
+                3. Open FlexSync from your Home Screen.
               </p>
               <button
                 onClick={() => setShowIOSGuide(false)}
-                className="w-full rounded-xl bg-slate-800 hover:bg-slate-700 py-2.5 text-xs font-medium text-slate-200 transition"
+                className="w-full rounded-full bg-white/[0.1] hover:bg-white/[0.16] py-2.5 text-xs font-medium text-white transition"
               >
-                Got it
+                Done
               </button>
             </div>
           </div>

@@ -1,5 +1,17 @@
 import React from 'react';
-import { Bell, BellOff, QrCode, BookOpen, Laptop, Smartphone, Volume2, VolumeX, ShieldAlert, Wifi, WifiOff } from 'lucide-react';
+import {
+  Bell,
+  BellOff,
+  QrCode,
+  BookOpen,
+  Laptop,
+  Smartphone,
+  Volume2,
+  VolumeX,
+  Moon,
+  Wifi,
+  WifiOff,
+} from 'lucide-react';
 import { PWAInstallButton } from './PWAInstallButton';
 import { requestNotificationPermission } from '../utils/webNotification';
 
@@ -40,151 +52,145 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl px-4 py-2.5 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#0c0d12]/80 backdrop-blur-2xl px-4 py-2.5 sm:px-6">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-        {/* Brand & Mode */}
-        <div className="flex items-center gap-3">
+        {/* Left: Apple-Style Brand & Mode Segmented Control */}
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-sky-500 to-emerald-400 p-[1.5px] shadow-lg shadow-indigo-500/20">
-              <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-slate-950">
-                <Bell className="h-4 w-4 text-sky-400 animate-pulse" />
-              </div>
+            {/* App Icon (Apple squircle with blue gradient & glow) */}
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-[9px] bg-gradient-to-b from-[#0a84ff] to-[#0066cc] shadow-[0_2px_8px_rgba(10,132,255,0.35)] ring-1 ring-white/20">
+              <Bell className="h-4 w-4 text-white" />
               {activeCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-slate-950">
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff3b30] px-1 text-[10px] font-semibold text-white shadow-sm ring-2 ring-[#0c0d12]">
                   {activeCount > 99 ? '99+' : activeCount}
                 </span>
               )}
             </div>
 
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[15px] font-semibold tracking-tight text-white/95">
                   FlexSync
-                  <span className="rounded-md bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 text-[10px] font-medium text-indigo-400">
-                    Cross-OS
-                  </span>
-                </h1>
+                </span>
+                <span className="text-[11px] font-medium text-white/40 hidden sm:inline">
+                  Bridge
+                </span>
               </div>
-              <p className="hidden text-[11px] text-slate-400 sm:block">
-                Android ↔ Chrome OS Flex Real-time Bridge
-              </p>
             </div>
           </div>
 
-          {/* Mode Switcher */}
-          <div className="hidden md:flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 ml-3">
+          {/* Segmented Device Selector (Apple macOS / iOS style) */}
+          <div className="hidden md:flex items-center bg-white/[0.06] border border-white/[0.08] rounded-xl p-0.5 shadow-inner">
             <button
               onClick={() => onSwitchMode('chromeos')}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-[9px] text-xs font-medium transition-all ${
                 currentMode === 'chromeos'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-white/15 text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] ring-1 ring-white/10'
+                  : 'text-white/60 hover:text-white/90 hover:bg-white/[0.04]'
               }`}
             >
               <Laptop className="w-3.5 h-3.5" />
-              Chrome OS Flex Hub
+              <span>Chrome OS Flex Hub</span>
             </button>
             <button
               onClick={() => onSwitchMode('android')}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-[9px] text-xs font-medium transition-all ${
                 currentMode === 'android'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-[#30d158]/20 text-[#30d158] shadow-[0_1px_3px_rgba(0,0,0,0.3)] ring-1 ring-[#30d158]/30 font-semibold'
+                  : 'text-white/60 hover:text-white/90 hover:bg-white/[0.04]'
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
-              Android Mobile Node
+              <span>Android Node</span>
             </button>
           </div>
         </div>
 
-        {/* Right Toolbar */}
+        {/* Right: Apple Control Center items & Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Connection status indicator */}
+          {/* Connection Status Pill */}
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
               isConnected
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                ? 'bg-[#30d158]/10 border-[#30d158]/25 text-[#30d158]'
                 : isReconnecting
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse'
-                : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                ? 'bg-[#ff9f0a]/10 border-[#ff9f0a]/25 text-[#ff9f0a]'
+                : 'bg-[#ff453a]/10 border-[#ff453a]/25 text-[#ff453a]'
             }`}
-            title={isConnected ? 'Real-time WebSocket connected' : 'Connecting to sync bridge...'}
+            title={isConnected ? 'Sync bridge live (WebSocket connected)' : 'Reconnecting...'}
           >
-            {isConnected ? (
-              <>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="hidden sm:inline">Live Sync</span>
-                <Wifi className="w-3 h-3 sm:hidden" />
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-3 h-3" />
-                <span className="hidden sm:inline">{isReconnecting ? 'Reconnecting...' : 'Offline'}</span>
-              </>
-            )}
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                isConnected
+                  ? 'bg-[#30d158] shadow-[0_0_6px_#30d158]'
+                  : isReconnecting
+                  ? 'bg-[#ff9f0a] animate-pulse'
+                  : 'bg-[#ff453a]'
+              }`}
+            />
+            <span className="hidden sm:inline tracking-tight">
+              {isConnected ? 'Synced' : isReconnecting ? 'Connecting' : 'Offline'}
+            </span>
+            <Wifi className="w-3 h-3 sm:hidden" />
           </div>
 
-          {/* DND Toggle */}
+          {/* Apple Focus / Do Not Disturb Toggle */}
           <button
             onClick={onToggleDnd}
-            className={`flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium border transition ${
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border transition-all ${
               dndMode
-                ? 'bg-purple-950/60 border-purple-500/50 text-purple-300'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
+                ? 'bg-[#af52de]/20 border-[#af52de]/40 text-[#d184fc] shadow-[0_0_12px_rgba(175,82,222,0.25)]'
+                : 'bg-white/[0.06] border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.1]'
             }`}
-            title={dndMode ? 'Do Not Disturb is Active (Notifications silenced)' : 'Enable Do Not Disturb'}
+            title={dndMode ? 'Focus / Do Not Disturb Active' : 'Turn on Focus Mode'}
           >
-            <ShieldAlert className={`w-3.5 h-3.5 ${dndMode ? 'text-purple-400' : 'text-slate-400'}`} />
-            <span className="hidden lg:inline">{dndMode ? 'DND Active' : 'DND'}</span>
+            <Moon className={`w-3.5 h-3.5 ${dndMode ? 'fill-[#af52de] text-[#af52de]' : 'text-white/60'}`} />
+            <span className="hidden lg:inline">{dndMode ? 'Focus On' : 'Focus'}</span>
           </button>
 
-          {/* Audio Chime Toggle */}
+          {/* Sound Toggle */}
           <button
             onClick={onToggleSound}
-            className="flex items-center justify-center h-8 w-8 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
-            title={soundEnabled ? 'Chime sound enabled (Click to mute)' : 'Chime sound muted'}
+            className="flex items-center justify-center h-7 w-7 rounded-full border border-white/[0.08] bg-white/[0.06] text-white/70 hover:text-white hover:bg-white/[0.12] transition-colors"
+            title={soundEnabled ? 'Chime sound on' : 'Chime muted'}
           >
             {soundEnabled ? (
-              <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+              <Volume2 className="w-3.5 h-3.5 text-white/90" />
             ) : (
-              <VolumeX className="w-3.5 h-3.5 text-slate-500" />
+              <VolumeX className="w-3.5 h-3.5 text-white/40" />
             )}
           </button>
 
-          {/* Web notification permission requester if not granted */}
+          {/* Allow Popups Prompt if not granted */}
           {notifPermission !== 'granted' && 'Notification' in window && (
             <button
               onClick={handleRequestPermission}
-              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-xs font-medium text-amber-300 hover:bg-amber-500/20 transition"
-              title="Enable native desktop notifications for Chrome OS Flex"
+              className="hidden sm:flex items-center gap-1.5 rounded-full border border-[#ff9f0a]/30 bg-[#ff9f0a]/15 px-3 py-1 text-xs font-medium text-[#ffd60a] hover:bg-[#ff9f0a]/25 transition"
             >
               <BellOff className="w-3.5 h-3.5" />
-              <span>Allow OS Popups</span>
+              <span>Allow Banners</span>
             </button>
           )}
 
-          {/* Setup Guide */}
+          {/* Setup Guide Button */}
           <button
             onClick={onOpenGuide}
-            className="hidden sm:flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition"
-            title="Android Setup & Webhook Guide"
+            className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.06] px-3 py-1 text-xs font-medium text-white/80 hover:text-white hover:bg-white/[0.12] transition"
           >
-            <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+            <BookOpen className="w-3.5 h-3.5 text-white/50" />
             <span>Guide</span>
           </button>
 
-          {/* Pair Device QR Modal */}
+          {/* Pair Device (Apple Blue Primary Button) */}
           <button
             onClick={onOpenPairing}
-            className="flex items-center gap-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1.5 text-xs font-medium text-indigo-300 hover:bg-indigo-500/20 transition shadow-sm"
-            title="Pair Android with Chrome OS Flex via QR code or Sync code"
+            className="flex items-center gap-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white px-3.5 py-1 text-xs font-medium shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:shadow-[0_2px_8px_rgba(0,113,227,0.4)] transition active:scale-95"
           >
-            <QrCode className="w-3.5 h-3.5 text-indigo-400" />
+            <QrCode className="w-3.5 h-3.5" />
             <span>Pair Device</span>
           </button>
 
-          {/* PWA Install */}
+          {/* PWA Install Button */}
           <PWAInstallButton />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { QrCode, Copy, Check, X, Smartphone, Laptop, ExternalLink, ArrowRight } from 'lucide-react';
+import { QrCode, Copy, Check, X, ExternalLink, ArrowRight } from 'lucide-react';
 
 interface PairingModalProps {
   isOpen: boolean;
@@ -28,8 +28,8 @@ export const PairingModal: React.FC<PairingModalProps> = ({
         margin: 2,
         width: 240,
         color: {
-          dark: '#020617',
-          light: '#f8fafc',
+          dark: '#0a0b10',
+          light: '#ffffff',
         },
       })
         .then((url) => setQrUrl(url))
@@ -60,57 +60,52 @@ export const PairingModal: React.FC<PairingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl p-6 text-slate-100">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md rounded-3xl bg-[#181a24]/95 border border-white/[0.12] shadow-2xl p-6 text-white">
+        {/* Apple Sheet Header */}
+        <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.08]">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-              <QrCode className="w-5 h-5" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#0a84ff]/15 border border-[#0a84ff]/25 text-[#0a84ff]">
+              <QrCode className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Pair Android with Chrome OS Flex</h3>
-              <p className="text-xs text-slate-400">Instant real-time bidirectional sync</p>
+              <h3 className="text-[15px] font-semibold text-white tracking-tight">Pair Device</h3>
+              <p className="text-xs text-white/50">Real-time sync between Android & Chrome OS Flex</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="h-7 w-7 rounded-full flex items-center justify-center text-white/50 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* QR Code Section */}
+        {/* QR Code */}
         <div className="mt-5 flex flex-col items-center text-center">
-          <div className="rounded-2xl bg-white p-3 shadow-lg shadow-indigo-500/10 ring-4 ring-indigo-500/20">
+          <div className="rounded-2xl bg-white p-3 shadow-xl ring-4 ring-white/[0.06]">
             {qrUrl ? (
               <img src={qrUrl} alt="Pairing QR Code" className="h-44 w-44 rounded-xl" />
             ) : (
-              <div className="flex h-44 w-44 items-center justify-center text-slate-600">
+              <div className="flex h-44 w-44 items-center justify-center text-neutral-400">
                 Generating QR...
               </div>
             )}
           </div>
 
-          <div className="mt-4">
-            <p className="text-xs font-medium text-slate-300">
-              Scan this QR code with your Android camera or Chrome browser
-            </p>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              It will instantly open and link your Android phone to this workspace session.
-            </p>
-          </div>
+          <p className="mt-3.5 text-xs text-white/70 max-w-xs leading-relaxed">
+            Scan with your Android camera or Chrome browser to instantly pair notifications.
+          </p>
         </div>
 
-        {/* 6-Digit Code Box */}
-        <div className="mt-5 rounded-2xl bg-slate-950/70 border border-slate-800 p-4">
+        {/* Sync Code Box */}
+        <div className="mt-5 rounded-2xl bg-black/30 border border-white/[0.08] p-3.5">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">
-                Sync Workspace Code
+              <span className="text-[10px] uppercase font-semibold text-white/40 tracking-wider">
+                Sync Code
               </span>
-              <div className="font-mono text-xl font-extrabold tracking-wider text-indigo-400 mt-0.5">
+              <div className="font-mono text-xl font-bold tracking-wider text-[#0a84ff] mt-0.5">
                 {roomCode}
               </div>
             </div>
@@ -118,15 +113,15 @@ export const PairingModal: React.FC<PairingModalProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCopyCode}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-medium text-slate-200 transition"
+                className="flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.08] hover:bg-white/[0.14] px-3 py-1.5 text-xs font-medium text-white transition active:scale-95"
               >
-                {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedCode ? 'Copied' : 'Copy Code'}</span>
+                {copiedCode ? <Check className="w-3.5 h-3.5 text-[#30d158]" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedCode ? 'Copied' : 'Copy'}</span>
               </button>
 
               <button
                 onClick={handleCopyLink}
-                className="flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-600/20 transition"
+                className="flex items-center gap-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] px-3.5 py-1.5 text-xs font-medium text-white transition active:scale-95 shadow-sm"
               >
                 {copiedLink ? <Check className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
                 <span>{copiedLink ? 'Copied' : 'Share Link'}</span>
@@ -141,14 +136,14 @@ export const PairingModal: React.FC<PairingModalProps> = ({
             type="text"
             value={inputCode}
             onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-            placeholder="Join existing sync code..."
-            className="flex-1 rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            placeholder="Enter another sync code..."
+            className="flex-1 rounded-xl bg-white/[0.04] border border-white/[0.08] px-3 py-2 text-xs font-mono text-white placeholder:text-white/40 focus:outline-none focus:border-[#0071e3]"
           />
           <button
             type="submit"
-            className="flex items-center gap-1 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-2 text-xs font-medium text-slate-200 transition"
+            className="flex items-center gap-1 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.08] px-3 py-2 text-xs font-medium text-white transition"
           >
-            <span>Switch</span>
+            <span>Join</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
@@ -156,7 +151,7 @@ export const PairingModal: React.FC<PairingModalProps> = ({
         <div className="mt-5 text-center">
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-slate-800/80 hover:bg-slate-800 py-2.5 text-xs font-medium text-slate-300 transition"
+            className="w-full rounded-full bg-white/[0.08] hover:bg-white/[0.14] py-2.5 text-xs font-medium text-white/80 transition"
           >
             Done
           </button>
