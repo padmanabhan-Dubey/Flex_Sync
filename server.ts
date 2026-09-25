@@ -709,6 +709,57 @@ async function startServer() {
     res.json({ success: true, entry });
   });
 
+  // Digital Asset Links for Android Trusted Web Activity (TWA) verification
+  app.get('/.well-known/assetlinks.json', (_req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.json([
+      {
+        relation: [
+          'delegate_permission/common.handle_all_urls',
+          'delegate_permission/common.get_login_creds',
+        ],
+        target: {
+          namespace: 'android_app',
+          package_name: 'com.flexsync.bridge',
+          sha256_cert_fingerprints: [
+            // Standard debug and release cert fingerprints
+            '14:6D:E9:44:C8:B1:FB:B6:71:9A:0E:EB:16:8B:1F:65:00:23:44:81:4A:27:0B:FD:E1:AA:60:BD:13:B9:3E:AA',
+          ],
+        },
+      },
+    ]);
+  });
+
+  // Android TWA / PWABuilder Manifest configuration
+  app.get('/api/android/twa-manifest.json', (req, res) => {
+    const host = req.get('host') || 'localhost:3000';
+    const protocol = req.protocol || 'http';
+    res.json({
+      packageId: 'com.flexsync.bridge',
+      host: host,
+      name: 'FlexSync Bridge',
+      launcherName: 'FlexSync',
+      themeColor: '#0c0d12',
+      navigationColor: '#0a0b10',
+      backgroundColor: '#0a0b10',
+      enableNotifications: true,
+      startUrl: '/',
+      iconUrl: `${protocol}://${host}/pwa-512x512.png`,
+      maskableIconUrl: `${protocol}://${host}/pwa-maskable-512x512.png`,
+      appVersionName: '1.0.0',
+      appVersionCode: 1,
+      shortcuts: [],
+      generatorApp: 'FlexSync Android Engine',
+      webManifestUrl: `${protocol}://${host}/manifest.webmanifest`,
+      fallbackType: 'customtabs',
+      features: {
+        locationDelegation: { enabled: false },
+        playBilling: { enabled: false },
+      },
+      alphaDependencies: { enabled: false },
+    });
+  });
+
   // Serve static public assets (icons, manifest.json, etc.)
   app.use(express.static(path.resolve(__dirname, 'public')));
 

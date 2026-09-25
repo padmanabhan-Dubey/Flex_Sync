@@ -12,6 +12,7 @@ import { AppFilterManager } from './components/AppFilterManager';
 import { AndroidSimulatorDrawer } from './components/AndroidSimulatorDrawer';
 import { PairingModal } from './components/PairingModal';
 import { AndroidSetupGuideModal } from './components/AndroidSetupGuideModal';
+import { AndroidApkModal } from './components/AndroidApkModal';
 import { RingingAlertModal } from './components/RingingAlertModal';
 import { WifiOff } from 'lucide-react';
 
@@ -56,6 +57,7 @@ export default function App() {
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isPairingOpen, setIsPairingOpen] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isApkModalOpen, setIsApkModalOpen] = useState(false);
 
   // Online status
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
@@ -180,6 +182,7 @@ export default function App() {
         onToggleSound={() => setSoundEnabled(!soundEnabled)}
         onOpenPairing={() => setIsPairingOpen(true)}
         onOpenGuide={() => setIsGuideOpen(true)}
+        onOpenApkModal={() => setIsApkModalOpen(true)}
         activeCount={counts.unread}
       />
 
@@ -216,6 +219,7 @@ export default function App() {
               currentDeviceId={deviceInfo.id}
               roomCode={roomCode}
               onOpenPairing={() => setIsPairingOpen(true)}
+              onOpenApkModal={() => setIsApkModalOpen(true)}
               onTriggerRing={triggerRing}
               ringingDeviceId={ringingDeviceId}
             />
@@ -277,6 +281,11 @@ export default function App() {
         isOpen={isGuideOpen}
         onClose={() => setIsGuideOpen(false)}
         roomCode={roomCode}
+      />
+
+      <AndroidApkModal
+        isOpen={isApkModalOpen}
+        onClose={() => setIsApkModalOpen(false)}
       />
 
       {/* Ringing Siren Modal if this device is requested to ring */}

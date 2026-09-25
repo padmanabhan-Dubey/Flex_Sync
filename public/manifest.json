@@ -2,13 +2,13 @@
   "id": "/",
   "name": "FlexSync - Real-time Notification Bridge",
   "short_name": "FlexSync",
-  "description": "Cross-device real-time notification sync and management hub for Android and Chrome OS Flex.",
+  "description": "Cross-device real-time notification sync, media controls, and remote clipboard hub for Android and Chrome OS Flex.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#090d16",
-  "theme_color": "#0f172a",
+  "background_color": "#0a0b10",
+  "theme_color": "#0c0d12",
   "categories": ["utilities", "productivity"],
   "icons": [
     {

@@ -7,6 +7,7 @@ interface DeviceWidgetProps {
   currentDeviceId: string;
   roomCode: string;
   onOpenPairing: () => void;
+  onOpenApkModal?: () => void;
   onTriggerRing: (deviceId: string) => void;
   ringingDeviceId: string | null;
 }
@@ -16,6 +17,7 @@ export const DeviceWidget: React.FC<DeviceWidgetProps> = ({
   currentDeviceId,
   roomCode,
   onOpenPairing,
+  onOpenApkModal,
   onTriggerRing,
   ringingDeviceId,
 }) => {
@@ -112,8 +114,8 @@ export const DeviceWidget: React.FC<DeviceWidgetProps> = ({
         </button>
       </div>
 
-      {/* Bottom Action: Find My Phone (Play Sound) */}
-      <div className="pt-1">
+      {/* Bottom Action: Find My Phone (Play Sound) & APK Package */}
+      <div className="pt-1 space-y-2">
         {device && device.type === 'android' && device.id !== currentDeviceId ? (
           <button
             onClick={() => onTriggerRing(device.id)}
@@ -133,6 +135,16 @@ export const DeviceWidget: React.FC<DeviceWidgetProps> = ({
           >
             <QrCode className="w-3.5 h-3.5" />
             <span>Connect Android Phone</span>
+          </button>
+        )}
+
+        {onOpenApkModal && (
+          <button
+            onClick={onOpenApkModal}
+            className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#30d158]/10 hover:bg-[#30d158]/20 border border-[#30d158]/25 text-[#30d158] py-1.5 text-[11px] font-medium transition active:scale-95"
+          >
+            <Smartphone className="w-3 h-3" />
+            <span>Install WebAPK / Download Android APK</span>
           </button>
         )}
       </div>

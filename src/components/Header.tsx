@@ -26,6 +26,7 @@ interface HeaderProps {
   onToggleSound: () => void;
   onOpenPairing: () => void;
   onOpenGuide: () => void;
+  onOpenApkModal: () => void;
   activeCount: number;
 }
 
@@ -40,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSound,
   onOpenPairing,
   onOpenGuide,
+  onOpenApkModal,
   activeCount,
 }) => {
   const [notifPermission, setNotifPermission] = React.useState<NotificationPermission>(() => {
@@ -179,6 +181,17 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <BookOpen className="w-3.5 h-3.5 text-white/50" />
             <span>Guide</span>
+          </button>
+
+          {/* APK & PWA Package Center Button */}
+          <button
+            onClick={onOpenApkModal}
+            className="flex items-center gap-1.5 rounded-full border border-[#30d158]/30 bg-[#30d158]/15 px-3 py-1 text-xs font-medium text-[#30d158] hover:bg-[#30d158]/25 transition active:scale-95"
+            title="Download Android APK & Install PWA"
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">APK & PWA</span>
+            <span className="sm:hidden">APK</span>
           </button>
 
           {/* Pair Device (Apple Blue Primary Button) */}
