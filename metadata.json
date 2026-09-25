@@ -1,0 +1,6 @@
+{
+  "name": "FlexSync - Real-time Notification Bridge",
+  "description": "Cross-device real-time notification sync and management hub for Android and Chrome OS Flex.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
